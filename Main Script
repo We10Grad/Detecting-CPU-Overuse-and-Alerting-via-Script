@@ -1,0 +1,16 @@
+#!/bin/bash
+# This script tests CPU usage and outputs the results with an alert if use is over 80%
+
+# Get CPU idle percentage from sar
+idle=$(sar -u 1 1 | tail -1 | awk '{print $NF}')
+
+# Calculate busy CPU (100 - idle)  
+busy=$(echo "100 - $idle" | bc)
+
+# Display result
+echo "CPU Usage: ${busy}%"
+
+# Check if over 80%
+if (( $(echo "$busy >= 80" | bc -l) )); then
+    echo "ALERT: High CPU usage!"
+fi
